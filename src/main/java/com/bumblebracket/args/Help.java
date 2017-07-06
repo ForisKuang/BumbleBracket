@@ -15,4 +15,12 @@ public class Help {
     }
   };
 
+  public static final Map<String, String> GET_OPTIONS = new TreeMap<String, String>() {
+    {
+      put("-all", "Display the entire bracket");
+      put("[name]", "Display the information for that person");
+      put("-top", "Display the top N people in the bracket where N is specified");
+    }
+  };
+
 }
