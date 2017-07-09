@@ -1,29 +1,20 @@
 package com.bumblebracket;
 
-import com.bumblebracket.cb.CBConfig;
-import com.bumblebracket.posts.User;
+import com.bumblebracket.config.CBConfig;
+import com.bumblebracket.model.User;
 
 import com.couchbase.client.java.query.N1qlQuery;
 import com.couchbase.client.java.query.N1qlQueryResult;
 import com.couchbase.client.java.query.N1qlQueryRow;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
-import com.google.firebase.auth.FirebaseCredentials;
 import com.google.firebase.database.*;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class Database {
 
-  public static final String DATABASE_URL = "https://bumble-bracket.firebaseio.com/";
-
-  public static final String TABLE = "default";
-
-  private static DatabaseReference database;
+  public static DatabaseReference database;
 
   private static void addNewUsersListener(final DatabaseReference postRef, final User user) {
     postRef.child("users").addChildEventListener(new ChildEventListener() {
@@ -59,13 +50,13 @@ public class Database {
   }
 
   public static void startListeners(DatabaseReference database) {
-    database.child("posts").addChildEventListener(new ChildEventListener() {
+    database.child("posts").addChildEventListener(new ChildEventListener()  {
 
       public void onChildAdded(DataSnapshot dataSnapshot, String prevChildName) {
         final String postId = dataSnapshot.getKey();
         final User user = dataSnapshot.getValue(User.class);
 
-        // Listen for changes in the number of stars and update starCount
+        // Listen for changes in the number of users and update usersCount
         addNewUserChangedListener(user, postId);
 
         // Listen for new users on the post, notify users on changes

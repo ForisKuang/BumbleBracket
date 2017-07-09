@@ -1,8 +1,8 @@
 package com.bumblebracket.args;
 
 import com.bumblebracket.Database;
-import com.bumblebracket.cb.CBConfig;
-import com.couchbase.client.java.document.*;
+import com.bumblebracket.config.CBConfig;
+import com.bumblebracket.config.Configs;
 
 
 public class Drop {
@@ -14,7 +14,7 @@ public class Drop {
   }
 
   public void drop(String name) {
-      String query = "DELETE FROM " + Database.TABLE + "WHERE name=" + "\"" + name + "\"";
+      String query = "DELETE FROM " + Configs.TABLE + "WHERE name=" + "\"" + name + "\"";
       Database.query(query, cb);
   }
 

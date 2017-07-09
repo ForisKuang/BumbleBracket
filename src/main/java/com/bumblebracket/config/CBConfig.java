@@ -1,9 +1,7 @@
-package com.bumblebracket.cb;
+package com.bumblebracket.config;
 
 import com.couchbase.client.java.*;
-import com.couchbase.client.java.document.*;
-import com.couchbase.client.java.document.json.*;
-import com.couchbase.client.java.query.*;
+
 
 public class CBConfig {
 

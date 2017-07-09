@@ -1,9 +1,12 @@
 package com.bumblebracket.args;
 
 import com.bumblebracket.Database;
-import com.bumblebracket.cb.CBConfig;
+import com.bumblebracket.config.CBConfig;
+import com.bumblebracket.config.Configs;
+import com.bumblebracket.model.User;
 import com.couchbase.client.java.document.*;
 import com.couchbase.client.java.document.json.JsonObject;
+import com.google.firebase.database.DatabaseReference;
 import java.util.List;
 
 
@@ -31,7 +34,16 @@ public class Upsert {
     cb.cbBucket.upsert(JsonDocument.create("u:"+name, obj));
   }
 
-  public void update(String name, int score) {
+  public void upsert(String name, String description, DatabaseReference database) {
+    database.child(name).setValue(new User(name, 100, description));
+
+  }
+
+    public void upsert(String name, int score, String description, DatabaseReference database) {
+    database.child(name).setValue(new User(name, score, description));
+  }
+
+  public void updateScore(String name, int score) {
     // Get the current score to see how much to subtract
     Get get = new Get(cb);
     List<String> results = get.get(name);
@@ -43,7 +55,7 @@ public class Upsert {
       drop.drop(name);
       return;
     }
-    String query = "UPDATE " + Database.TABLE + " SET score=" + currScore + " WHERE name=" + "\"" + name + "\"";
+    String query = "UPDATE " + Configs.TABLE + " SET score=" + currScore + " WHERE name=" + "\"" + name + "\"";
   }
 
 }

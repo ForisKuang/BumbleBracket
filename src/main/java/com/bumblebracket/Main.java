@@ -3,7 +3,15 @@ package com.bumblebracket;
 import com.bumblebracket.args.Help;
 import com.bumblebracket.args.Get;
 import com.bumblebracket.args.Upsert;
-import com.bumblebracket.cb.CBConfig;
+import com.bumblebracket.config.CBConfig;
+import com.bumblebracket.config.Configs;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.FirebaseCredentials;
+import com.google.firebase.database.FirebaseDatabase;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -14,32 +22,32 @@ public class Main {
   public static void main(String[] args) {
     Scanner scan = new Scanner(System.in);
     CBConfig cbConfig = new CBConfig();
-        /*
-        // Initialize Firebase instance
-        try {
-        // [START initialize]
-        FileInputStream serviceAccount = new FileInputStream("service-account.json");
-        FirebaseOptions options = new FirebaseOptions.Builder()
-            .setCredential(FirebaseCredentials.fromCertificate(serviceAccount))
-            .setDatabaseUrl(Database.DATABASE_URL)
-            .build();
-        FirebaseApp.initializeApp(options);
-        // [END initialize]
-      } catch (FileNotFoundException e) {
-        System.out.println("ERROR: invalid service account credentials. See README.");
-        System.out.println(e.getMessage());
 
-        System.exit(1);
-      } catch (IOException e) {
-          e.printStackTrace();
-        }
+    // Initialize Firebase instance
+    try {
+      // [START initialize]
+      FileInputStream serviceAccount = new FileInputStream(Configs.PATH_TO_JSON);
+      FirebaseOptions options = new FirebaseOptions.Builder()
+          .setCredential(FirebaseCredentials.fromCertificate(serviceAccount))
+          .setDatabaseUrl(Configs.DATABASE_URL)
+          .build();
+      FirebaseApp.initializeApp(options);
+      // [END initialize]
+    } catch (FileNotFoundException e) {
+      System.out.println("ERROR: invalid service account credentials. See README.");
+      System.out.println(e.getMessage());
 
-      // Shared Database reference
-      DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+      System.exit(1);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
 
-      // Start listening to the Database
-      Database.startListeners();
-      */
+    // Shared Database reference
+    Database.database = FirebaseDatabase.getInstance().getReference();
+
+    // Start listening to the Database
+    Database.startListeners(Database.database);
+
     if(args.length != 0) {
       if(args[0].equals("-help")) {
         for (String key : Help.HELP_OPTIONS.keySet()) {
@@ -58,11 +66,13 @@ public class Main {
           String response = scan.next();
           if(!response.toLowerCase().startsWith("y")) {
             upsert.upsert(name, description);
+            upsert.upsert(name, description, Database.database.child("users"));
             return;
           }
-          System.out.print("Amount to be subtracted: ");
+          System.out.print("Amount to be subtracted from initial 100: ");
           int score = scan.nextInt();
           upsert.upsert(name, score, description);
+          upsert.upsert(name, score, description, Database.database.child("users"));
         }
       } else if (args[0].equals("-drop")) {
         System.err.println("Error: Feature not supported yet");
