@@ -32,7 +32,9 @@ public class Get {
     query.addChildEventListener(new ChildEventListener() {
       @Override
       public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-        System.out.println(dataSnapshot.getKey());
+        for(String item : Database.removeExcess(dataSnapshot.getValue().toString())) {
+          System.out.println(item);
+        }
       }
 
       @Override
@@ -55,6 +57,7 @@ public class Get {
 
       }
     });
+
   }
 
   public List<String> top(int num) {

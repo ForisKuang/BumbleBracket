@@ -1,5 +1,6 @@
 package com.bumblebracket;
 
+import com.bumblebracket.args.Drop;
 import com.bumblebracket.args.Help;
 import com.bumblebracket.args.Get;
 import com.bumblebracket.args.Upsert;
@@ -75,7 +76,13 @@ public class Main {
           upsert.upsert(name, score, description, Database.database.child("users"));
         }
       } else if (args[0].equals("-drop")) {
-        System.err.println("Error: Feature not supported yet");
+        if(args.length == 1) {
+          System.err.println("Error: Requires a name");
+          return;
+        }
+        Drop drop = new Drop(cbConfig);
+        drop.drop(args[1]);
+        System.out.println("Dropped " + args[1] + " from database");
       } else if(args[0].equals("-get")) {
         Get get = new Get(cbConfig);
         List<String> result = new ArrayList<String>();
@@ -96,8 +103,8 @@ public class Main {
           result = get.top(Integer.parseInt(args[2]));
         } else {
           result = get.get(args[1]);
+          get.get(args[1], Database.database.child("users"));
         }
-        System.err.println(result.size());
         for(String s : result) {
           System.out.println(s);
         }

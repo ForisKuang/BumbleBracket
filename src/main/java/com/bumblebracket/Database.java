@@ -81,6 +81,15 @@ public class Database {
     return removeExcess(result);
   }
 
+  public static List<String> removeExcess(String result) {
+    List<String> listResult = new ArrayList<String>();
+    String[] resultArr = result.split("\\{+|\\:+|\\}+");
+    for(int i = 0; i < resultArr.length; i++) {
+      listResult.add(resultArr[i]);
+    }
+    return listResult;
+  }
+
   private static List<String> removeExcess(N1qlQueryResult result) {
     List<String> listResults = new ArrayList<String>();
     for(N1qlQueryRow row : result) {
